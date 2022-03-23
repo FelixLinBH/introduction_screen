@@ -368,6 +368,7 @@ class IntroductionScreenState extends State<IntroductionScreen> {
   @override
   Widget build(BuildContext context) {
     final isLastPage = (_currentPage.round() == getPagesLength() - 1);
+    final isFirstPage = (_currentPage.round() == 0);
 
     Widget? leftBtn;
     if (widget.showSkipButton && !_isSkipPressed && !isLastPage) {
@@ -401,14 +402,23 @@ class IntroductionScreenState extends State<IntroductionScreen> {
             onPressed: !_isScrolling ? widget.onDone : null,
           );
     } else if (!isLastPage && widget.showNextButton) {
-      rightBtn = widget.overrideNext ??
-          IntroButton(
-            child: widget.next!,
-            style: widget.baseBtnStyle?.merge(widget.nextStyle) ??
-                widget.nextStyle,
-            semanticLabel: widget.nextSemantic,
-            onPressed: !_isScrolling ? next : null,
-          );
+      if (isFirstPage) {
+        rightBtn = IntroButton(
+          child: Container(),
+          onPressed: null,
+          semanticLabel: widget.nextSemantic,
+          style: widget.baseBtnStyle?.merge(widget.nextStyle) ??
+              widget.nextStyle,);
+      } else {
+        rightBtn = widget.overrideNext ??
+            IntroButton(
+              child: widget.next!,
+              style: widget.baseBtnStyle?.merge(widget.nextStyle) ??
+                  widget.nextStyle,
+              semanticLabel: widget.nextSemantic,
+              onPressed: !_isScrolling ? next : null,
+            );
+      }
     }
 
     return Scaffold(
